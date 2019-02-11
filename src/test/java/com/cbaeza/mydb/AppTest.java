@@ -35,21 +35,15 @@ public class AppTest {
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
             DSLContext create = DSL.using(conn, SQLDialect.H2);
             Result<Record> result = create.select().from(Person.PERSON).fetch();
-
+            printResult(result);
             assertEquals(4, result.size());
-
-            for (Record r : result) {
-                int id = r.getValue(Person.PERSON.ID);
-                String firstName = r.getValue(Person.PERSON.NAME);
-                System.out.println("ID: " + id + "  NAME: " + firstName);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testInsert() {
+    public void testInsertAndDelete() {
         // Connection is the only JDBC resource that we need
         // PreparedStatement and ResultSet are handled by jOOQ, internally
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
@@ -60,20 +54,29 @@ public class AppTest {
                     .values(null, "Mr. X").execute();
             assertEquals(1, values);
 
+            Result<Record> all = create.select().from(Person.PERSON).fetch();
+            printResult(all);
+            assertEquals(5, all.size());
+
             int execute = create.delete(Person.PERSON)
                     .where(Person.PERSON.NAME.eq("Mr. X")).execute();
             assertEquals(1, execute);
 
             Result<Record> result = create.select().from(Person.PERSON).fetch();
+            printResult(result);
             assertEquals(4, result.size());
-            for (Record r : result) {
-                int id = r.getValue(Person.PERSON.ID);
-                String firstName = r.getValue(Person.PERSON.NAME);
-                System.out.println("ID: " + id + "  NAME: " + firstName);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void printResult(Result<Record> result) {
+        for (Record r : result) {
+            int id = r.getValue(Person.PERSON.ID);
+            String firstName = r.getValue(Person.PERSON.NAME);
+            System.out.println("ID: " + id + "  NAME: " + firstName);
+        }
+        System.out.println("**********************************");
     }
 
 }
