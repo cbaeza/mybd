@@ -1,6 +1,10 @@
 # mybd
 DB playground with flyway and jOOQ 
 
+# Build
+
+    (master) $ gradle build -i
+    
 # Migrate DB
 Flyway is available in the Gradle build. Run:
 
@@ -19,3 +23,4 @@ This command display the current DB status and migrations done.
     | Versioned | 1       | Create person table | SQL  | 2019-02-10 22:37:36 | Success |
     | Versioned | 2       | Add people          | SQL  | 2019-02-10 22:39:58 | Success |
     +-----------+---------+---------------------+------+---------------------+---------+        
+
