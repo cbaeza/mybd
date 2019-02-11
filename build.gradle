@@ -8,6 +8,7 @@
 buildscript {
     dependencies {
         classpath 'com.h2database:h2:1.4.197'
+        classpath 'org.jooq:jooq-codegen:3.11.9'
     }
 }
 plugins {
@@ -27,17 +28,76 @@ repositories {
 }
 
 dependencies {
+    /**
+     * IMPLEMENTATION
+     */
     // This dependency is found on compile classpath of this component and consumers.
     implementation 'com.google.guava:guava:27.0.1-jre'
+    implementation 'org.jooq:jooq:3.11.9'
 
-    // Use JUnit test framework
+    /**
+     * COMPILE
+     */
+    compile 'org.jooq:jooq:3.11.9'
+
+    /**
+     * RUNTIME
+     */
+    runtime 'com.h2database:h2:1.4.197'
+
+    /**
+     * TEST
+     */
     testImplementation 'junit:junit:4.12'
-}
-
-flyway {
-    url = 'jdbc:h2:file:./db/foobardb'
-    user = 'sa'
 }
 
 // Define the main class for the application
 mainClassName = 'com.cbaeza.mydb.App'
+
+task('buildDBEntities').doFirst {
+    logger.info "***********************************************"
+    logger.info "   BUILD DB ENTITIES -> jooq"
+    logger.info "   project.flyway.driver -> ${project.ext['flyway.driver']}"
+    logger.info "   project.flyway.url -> ${project.ext['flyway.url']}"
+    logger.info "   project.flyway.user -> ${project.ext['flyway.user']}"
+    logger.info "***********************************************"
+
+    apply plugin: 'java'
+    // Use your favourite XML builder to construct the code generation configuration file
+    // ----------------------------------------------------------------------------------
+    def writer = new StringWriter()
+    def xml = new groovy.xml.MarkupBuilder(writer)
+            .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.11.0.xsd') {
+        jdbc() {
+            driver(project.ext['flyway.driver'])
+            url(project.ext['flyway.url'])
+            user(project.ext['flyway.user'])
+            password(project.ext['flyway.password'])
+        }
+        generator() {
+            database() {
+            }
+
+            // Watch out for this caveat when using MarkupBuilder with "reserved names"
+            // - https://github.com/jOOQ/jOOQ/issues/4797
+            // - http://stackoverflow.com/a/11389034/521799
+            // - https://groups.google.com/forum/#!topic/jooq-user/wi4S9rRxk4A
+            generate([:]) {
+                pojos true
+                daos true
+            }
+            target() {
+                packageName('com.cbaeza.jooq.gradle.db')
+                directory('src/main/java')
+            }
+        }
+    }
+
+    // Run the code generator
+    // ----------------------
+    org.jooq.codegen.GenerationTool.generate(writer.toString())
+}
+
+
+
+
