@@ -1,0 +1,6 @@
+2019-02-12 21:28:46 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]
+2019-02-12 21:32:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]

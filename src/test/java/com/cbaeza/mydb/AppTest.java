@@ -3,80 +3,85 @@
  */
 package com.cbaeza.mydb;
 
-import com.cbaeza.jooq.gradle.db.public_.tables.Person;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import com.cbaeza.jooq.gradle.db.public_.tables.Person;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+/**
+ * Connection is the only JDBC resource that we need. PreparedStatement and
+ * ResultSet are handled by jOOQ, internally
+ */
 public class AppTest {
-    private final String userName = "sa";
-    private final String password = "";
-    private final String url = "jdbc:h2:file:./db/foobardb";
 
-    @Test
-    public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+  private static final Logger LOG = LoggerFactory.getLogger(AppTest.class.getName());
+  private final String userName = "sa";
+  private final String password = "";
+  private final String url = "jdbc:h2:file:./db/foobardb";
+
+  @Test
+  public void testAppHasAGreeting() {
+    App classUnderTest = new App();
+    assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+  }
+
+  @Test
+  public void testSelect() {
+    try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+      DSLContext create = DSL.using(conn, SQLDialect.H2);
+      Result<Record> result = create.select().from(Person.PERSON).fetch();
+      printResult(result);
+      assertEquals(4, result.size());
+    } catch (Exception e) {
+      LOG.error("testSelect", e);
     }
+  }
 
-    @Test
-    public void testSelect() {
-        // Connection is the only JDBC resource that we need
-        // PreparedStatement and ResultSet are handled by jOOQ, internally
-        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
-            DSLContext create = DSL.using(conn, SQLDialect.H2);
-            Result<Record> result = create.select().from(Person.PERSON).fetch();
-            printResult(result);
-            assertEquals(4, result.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+  @Test
+  public void testInsertAndDelete() {
+    try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+      DSLContext create = DSL.using(conn, SQLDialect.H2);
+      int values = create
+          .insertInto(Person.PERSON)
+          .columns(Person.PERSON.ID, Person.PERSON.NAME)
+          .values(null, "Mr. X").execute();
+      assertEquals(1, values);
+
+      Result<Record> all = create.select().from(Person.PERSON).fetch();
+      printResult(all);
+      assertEquals(5, all.size());
+
+      int execute = create.delete(Person.PERSON)
+          .where(Person.PERSON.NAME.eq("Mr. X")).execute();
+      assertEquals(1, execute);
+
+      Result<Record> result = create.select().from(Person.PERSON).fetch();
+      printResult(result);
+      assertEquals(4, result.size());
+    } catch (Exception e) {
+      LOG.error("testInsertAndDelete", e);
     }
+  }
 
-    @Test
-    public void testInsertAndDelete() {
-        // Connection is the only JDBC resource that we need
-        // PreparedStatement and ResultSet are handled by jOOQ, internally
-        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
-            DSLContext create = DSL.using(conn, SQLDialect.H2);
-            int values = create
-                    .insertInto(Person.PERSON)
-                    .columns(Person.PERSON.ID, Person.PERSON.NAME)
-                    .values(null, "Mr. X").execute();
-            assertEquals(1, values);
-
-            Result<Record> all = create.select().from(Person.PERSON).fetch();
-            printResult(all);
-            assertEquals(5, all.size());
-
-            int execute = create.delete(Person.PERSON)
-                    .where(Person.PERSON.NAME.eq("Mr. X")).execute();
-            assertEquals(1, execute);
-
-            Result<Record> result = create.select().from(Person.PERSON).fetch();
-            printResult(result);
-            assertEquals(4, result.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+  private void printResult(Result<Record> result) {
+    for (Record r : result) {
+      int id = r.getValue(Person.PERSON.ID);
+      String firstName = r.getValue(Person.PERSON.NAME);
+      LOG.info("ID: " + id + "  NAME: " + firstName);
     }
-
-    private void printResult(Result<Record> result) {
-        for (Record r : result) {
-            int id = r.getValue(Person.PERSON.ID);
-            String firstName = r.getValue(Person.PERSON.NAME);
-            System.out.println("ID: " + id + "  NAME: " + firstName);
-        }
-        System.out.println("**********************************");
-    }
+    LOG.info("**********************************");
+  }
 
 }

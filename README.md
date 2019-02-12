@@ -1,7 +1,8 @@
 # mybd
-DB playground with flyway and jOOQ 
+Playground with [flyway](https://flywaydb.org/), [jOOQ](https://www.jooq.org/), [H2](http://www.h2database.com/html/main.html) and [SpringBoot](http://spring.io/projects/spring-boot) 
 
 # Build
+To run a full build
 
     (master) $ gradle build -i
     
@@ -24,3 +25,15 @@ This command display the current DB status and migrations done.
     | Versioned | 2       | Add people          | SQL  | 2019-02-10 22:39:58 | Success |
     +-----------+---------+---------------------+------+---------------------+---------+        
 
+# Run tests
+
+    (master) $ gradle clean test -i
+    
+# Run SpringBoot app
+App run http://localhost:8080/
+
+    (master) $ gradle bootRun -i    
+    
+Available rest endpoint
+    
+    http://localhost:8080/persons

@@ -226,3 +226,27 @@ insert into PERSON (ID, NAME) values ('Carlos Baeza') [21002-197]
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55)
 	at java.lang.Thread.run(Thread.java:748)
+2019-02-12 11:28:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]
+2019-02-12 11:28:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+insert into "PUBLIC"."PERSON" ("ID", "NAME") values (cast(? as int), cast(? as varchar)) [42102-197]
+2019-02-12 11:53:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]
+2019-02-12 11:53:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+insert into "PUBLIC"."PERSON" ("ID", "NAME") values (cast(? as int), cast(? as varchar)) [42102-197]
+2019-02-12 12:55:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]
+2019-02-12 12:55:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+insert into "PUBLIC"."PERSON" ("ID", "NAME") values (cast(? as int), cast(? as varchar)) [42102-197]
+2019-02-12 12:56:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+select "PUBLIC"."PERSON"."ID", "PUBLIC"."PERSON"."NAME" from "PUBLIC"."PERSON" [42102-197]
+2019-02-12 12:56:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+insert into "PUBLIC"."PERSON" ("ID", "NAME") values (cast(? as int), cast(? as varchar)) [42102-197]
