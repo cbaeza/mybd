@@ -83,6 +83,18 @@ public class PersonControllerIT {
   }
 
   @Test
+  public void testUpdateUnknowPerson() {
+    PersonDto personDto = new PersonDto(1000, "Max Musterman");
+    Response response = given().body(personDto)
+        .when()
+        .contentType(ContentType.JSON)
+        .put(URL + "/1000");
+    assertNotNull(response);
+    LOG.info(response.getBody().prettyPrint());
+    assertEquals("0 row affected", response.getBody().as(ResponseDto.class).getMessage());
+  }
+
+  @Test
   public void testUpdateEmptyPerson() {
     Response response = given().body("")
         .when()

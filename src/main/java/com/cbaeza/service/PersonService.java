@@ -53,7 +53,11 @@ public class PersonService {
     if (personDto != null) {
       int i = executeUpdateQuery(Person.PERSON, Person.PERSON.ID.eq(id), Person.PERSON.NAME, personDto.getName());
       LOG.info(">>>> result update: " + i);
-      return new ResponseDto(i + " row affected");
+      if (i == -1) {
+        return new ResponseDto(i + " NO row affected");
+      } else {
+        return new ResponseDto(i + " row affected");
+      }
     }
     return new ResponseDto("personDto can not be null");
   }
