@@ -1,4 +1,4 @@
-package com.cbaeza;
+package com.cbaeza.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.cbaeza.dto.PersonDto;
+import com.cbaeza.dto.ResponseDto;
 import com.cbaeza.jooq.gradle.db.public_.tables.Person;
 import com.cbaeza.util.MapUtils;
 
@@ -38,20 +40,29 @@ public class PersonService {
   private String password;
 
   public List<PersonDto> getAllPersons() {
-    Result<Record> result = executeQuery(Person.PERSON);
+    Result<Record> result = executeSelectQuery(Person.PERSON);
     return MapUtils.mapPersons(result);
   }
 
   public PersonDto getPerson(int id) {
-    Result<Record> result = executeQuery(Person.PERSON, Person.PERSON.ID.eq(id));
+    Result<Record> result = executeSelectQuery(Person.PERSON, Person.PERSON.ID.eq(id));
     return MapUtils.mapPerson(result);
   }
 
-  private Result<Record> executeQuery(Table table) {
-    return executeQuery(table, null);
+  public ResponseDto updatePerson(final int id, final PersonDto personDto) {
+    if (personDto != null) {
+      int i = executeUpdateQuery(Person.PERSON, Person.PERSON.ID.eq(id), Person.PERSON.NAME, personDto.getName());
+      LOG.info(">>>> result update: " + i);
+      return new ResponseDto(i + " row affected");
+    }
+    return new ResponseDto("personDto can not be null");
   }
 
-  private Result<Record> executeQuery(Table table, Condition condition) {
+  private Result<Record> executeSelectQuery(Table table) {
+    return executeSelectQuery(table, null);
+  }
+
+  private Result<Record> executeSelectQuery(Table table, Condition condition) {
     try (Connection conn = DriverManager.getConnection(url, user, password)) {
       DSLContext create = DSL.using(conn, SQLDialect.H2);
       if (condition != null) {
@@ -60,9 +71,21 @@ public class PersonService {
         return create.select().from(table).fetch();
       }
     } catch (Exception e) {
-      LOG.error("executeQuery", e);
+      LOG.error("executeSelectQuery", e);
     }
     return null;
+  }
+
+  private int executeUpdateQuery(Table table, Condition condition, Field row, String value) {
+    try (Connection conn = DriverManager.getConnection(url, user, password)) {
+      DSLContext create = DSL.using(conn, SQLDialect.H2);
+      if (condition != null) {
+        return create.update(table).set(row, value).where(condition).execute();
+      }
+    } catch (Exception e) {
+      LOG.error("executeSelectQuery", e);
+    }
+    return -1;
   }
 
 }

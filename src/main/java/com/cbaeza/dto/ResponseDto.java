@@ -5,8 +5,17 @@ package com.cbaeza.dto;
  */
 public class ResponseDto {
 
-  private final String message;
-  private final Long timestamp;
+  private String message;
+  private Long timestamp;
+
+  public ResponseDto() {
+
+  }
+
+  public ResponseDto(String message) {
+    this.message = message;
+    this.timestamp = System.currentTimeMillis();
+  }
 
   public ResponseDto(String message, Long timestamp) {
     this.message = message;
