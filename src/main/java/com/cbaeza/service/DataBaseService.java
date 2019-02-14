@@ -38,6 +38,11 @@ public class DataBaseService {
   }
 
   public Result<Record> executeSelectQuery(final Table table, final Condition condition) {
+    if (table == null) {
+      LOG.error("Table is mandatory and can't be null");
+      return null;
+    }
+
     try (Connection conn = DriverManager.getConnection(url, user, password)) {
       DSLContext create = DSL.using(conn, SQLDialect.H2);
       if (condition != null) {
@@ -53,6 +58,10 @@ public class DataBaseService {
 
   @SuppressWarnings("unchecked")
   public int executeUpdateQuery(final Table table, final Condition condition, final Field row, final String value) {
+    if (table == null || row == null || value == null) {
+      LOG.error("Parameter is mandatory and can't be null table: {}, row: {}, condition: {}", table, row, value);
+      return -1;
+    }
     try (Connection conn = DriverManager.getConnection(url, user, password)) {
       DSLContext create = DSL.using(conn, SQLDialect.H2);
       if (condition != null) {
