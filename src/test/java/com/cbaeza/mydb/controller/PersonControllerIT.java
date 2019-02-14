@@ -72,11 +72,12 @@ public class PersonControllerIT {
 
   @Test
   public void testUpdatePerson() {
-    PersonDto personDto = new PersonDto(1, "Carlos updated");
+    int ID = 1;
+    PersonDto personDto = new PersonDto(ID, "Carlos updated");
     Response response = given().body(personDto)
         .when()
         .contentType(ContentType.JSON)
-        .put(URL + "/1");
+        .put(URL + "/" + ID);
     assertNotNull(response);
     LOG.info(response.getBody().prettyPrint());
     assertEquals("1 row affected", response.getBody().as(ResponseDto.class).getMessage());
@@ -84,11 +85,12 @@ public class PersonControllerIT {
 
   @Test
   public void testUpdateUnknowPerson() {
-    PersonDto personDto = new PersonDto(1000, "Max Musterman");
+    int ID = 1000;
+    PersonDto personDto = new PersonDto(ID, "Max Musterman");
     Response response = given().body(personDto)
         .when()
         .contentType(ContentType.JSON)
-        .put(URL + "/1000");
+        .put(URL + "/" + ID);
     assertNotNull(response);
     LOG.info(response.getBody().prettyPrint());
     assertEquals("0 row affected", response.getBody().as(ResponseDto.class).getMessage());

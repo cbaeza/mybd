@@ -9,6 +9,7 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+
 plugins {
     id 'java'
     id 'application'
@@ -32,9 +33,10 @@ dependencies {
     /**
      * IMPLEMENTATION
      */
-    implementation("org.springframework.boot:spring-boot-starter-web:2.1.2.RELEASE")
-    //implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    //implementation("org.springframework.boot:spring-boot-devtools")
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.1.2.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+
     implementation 'com.google.guava:guava:27.0.1-jre'
     implementation 'org.jooq:jooq:3.11.9'
     implementation 'org.jooq:jooq:3.11.9'
