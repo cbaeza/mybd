@@ -8,7 +8,8 @@ public class PersonDto {
   private int ID;
   private String name;
 
-  public PersonDto(){}
+  public PersonDto() {
+  }
 
   public PersonDto(int ID, String name) {
     this.ID = ID;
