@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.cbaeza.dto.PersonDto;
 import com.cbaeza.dto.ResponseDto;
 import com.cbaeza.jooq.gradle.db.public_.tables.Person;
-import com.cbaeza.util.MapUtils;
+import com.cbaeza.util.MapperUtils;
 
 /**
  * Service responsible to retrieve person data from DB.
@@ -28,12 +28,12 @@ public class PersonService {
 
   public List<PersonDto> getAllPersons() {
     Result<Record> result = dataBaseService.executeSelectQuery(Person.PERSON);
-    return MapUtils.mapPersons(result);
+    return MapperUtils.mapPersons(result);
   }
 
   public PersonDto getPerson(int id) {
     Result<Record> result = dataBaseService.executeSelectQuery(Person.PERSON, Person.PERSON.ID.eq(id));
-    return MapUtils.mapPerson(result);
+    return MapperUtils.mapPerson(result);
   }
 
   public ResponseDto updatePerson(final int id, final PersonDto personDto) {

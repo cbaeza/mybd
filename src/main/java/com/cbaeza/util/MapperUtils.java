@@ -11,7 +11,10 @@ import org.springframework.util.CollectionUtils;
 import com.cbaeza.dto.PersonDto;
 import com.cbaeza.jooq.gradle.db.public_.tables.Person;
 
-public class MapUtils {
+/**
+ * Utility to perform mapping of Record's to Dto's
+ */
+public class MapperUtils {
 
   public static List<PersonDto> mapPersons(Result<Record> result) {
     if (CollectionUtils.isEmpty(result)) {
