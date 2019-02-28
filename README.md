@@ -11,7 +11,7 @@ Flyway is available in the Gradle build. Run:
 
     (master) $ gradle flywayMigrate -i
 
-Disply DB info
+Display DB info
 
     (master) $ gradle flywayInfo -i
     
